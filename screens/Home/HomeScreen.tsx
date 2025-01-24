@@ -2,15 +2,14 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Appbar, Text } from 'react-native-paper';
 import { Button } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen({ navigation, route }: { navigation: any; route: any }) {
     return (
-        <View style={{ flex: 1 }}>
-            <View>
-                <Appbar.Header mode="center-aligned" elevated>
-                    <Appbar.Content title="Arrecadação" />
-                </Appbar.Header>
-            </View>
+        <View>
+            <Appbar.Header mode="center-aligned" elevated>
+                <Appbar.Content title="Início" />
+            </Appbar.Header>
             <View
                 style={{
                     alignItems: 'center',
@@ -54,39 +53,5 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         alignItems: 'center',
         marginTop: 20,
-    },
-    textNewCampaign: {
-        color: 'white',
-        fontWeight: '700',
-        alignContent: 'center',
-        alignItems: 'center',
-    },
-    message: {
-        textAlign: 'center',
-        paddingBottom: 10,
-    },
-    camera: {
-        flex: 1,
-    },
-    buttonContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: 'transparent',
-        margin: 64,
-    },
-    button: {
-        flex: 1,
-        alignSelf: 'flex-end',
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'white',
-    },
-    textBarCode: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'black',
     },
 });

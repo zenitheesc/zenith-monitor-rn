@@ -4,18 +4,17 @@ import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
 import { BottomNavigation, Icon, PaperProvider, TouchableRipple } from 'react-native-paper';
-import { CommonActions, ParamListBase, TabNavigationState } from '@react-navigation/native';
-import {
-    MaterialBottomTabDescriptorMap,
-    MaterialBottomTabNavigationHelpers,
-} from 'react-native-paper/lib/typescript/react-navigation/types';
-import HomeScreen from '@/screens/HomeScreen';
+import { CommonActions } from '@react-navigation/native';
+import HomeScreenTabs from '@/screens/Home';
+import MissionsTabsScreen from '@/screens/Missions';
+import MenuTabsScreen from '@/screens/Menu';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs/lib/typescript/commonjs/src/types';
 
 export default function TabLayout() {
     const colorScheme = useColorScheme();
-    const Tab = createMaterialBottomTabNavigator();
+    const Tab = createBottomTabNavigator();
 
     return (
         <PaperProvider>
@@ -35,17 +34,7 @@ export default function TabLayout() {
                         default: {},
                     }),
                 }}
-                tabBar={({
-                    navigation,
-                    state,
-                    descriptors,
-                    insets,
-                }: {
-                    navigation: MaterialBottomTabNavigationHelpers;
-                    state: TabNavigationState<ParamListBase>;
-                    descriptors: MaterialBottomTabDescriptorMap;
-                    insets: any;
-                }) => (
+                tabBar={({ state, descriptors, navigation, insets }: BottomTabBarProps) => (
                     <BottomNavigation.Bar
                         shifting={false}
                         navigationState={state}
@@ -70,7 +59,7 @@ export default function TabLayout() {
                             const { options } = descriptors[route.key];
                             if (options.tabBarIcon) {
                                 return typeof options.tabBarIcon === 'function'
-                                    ? options.tabBarIcon({ focused, color })
+                                    ? options.tabBarIcon({ focused, color, size: 24 })
                                     : null;
                             }
 
@@ -95,17 +84,17 @@ export default function TabLayout() {
             >
                 <Tab.Screen
                     name="Home"
-                    component={HomeScreen}
+                    component={HomeScreenTabs}
                     options={{
                         tabBarLabel: 'Início',
-                        tabBarIcon: ({ color }: { color: string; size: number }) => {
+                        tabBarIcon: ({ color, size }: { color: string; size: number }) => {
                             return <Icon source="home" size={24} color={color} />;
                         },
                     }}
                 />
                 <Tab.Screen
                     name="Missions"
-                    component={HomeScreen}
+                    component={MissionsTabsScreen}
                     options={{
                         tabBarLabel: 'Missões',
                         tabBarIcon: ({ color }: { color: string }) => {
@@ -115,7 +104,7 @@ export default function TabLayout() {
                 />
                 <Tab.Screen
                     name="Menu"
-                    component={HomeScreen}
+                    component={MenuTabsScreen}
                     options={{
                         tabBarLabel: 'Menu',
                         tabBarIcon: ({ color }: { color: string }) => {
