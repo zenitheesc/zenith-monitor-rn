@@ -11,6 +11,7 @@ import MissionsTabsScreen from '@/screens/Missions';
 import MenuTabsScreen from '@/screens/Menu';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs/lib/typescript/commonjs/src/types';
+import { vh } from '@/utils/utils';
 
 export default function TabLayout() {
     const colorScheme = useColorScheme();
@@ -68,6 +69,8 @@ export default function TabLayout() {
                         renderTouchable={({ key, ...props }) => (
                             <TouchableRipple key={key} {...props} />
                         )}
+                        labeled={false}
+                        compact={true}
                         getLabelText={({ route }) => {
                             const { options } = descriptors[route.key];
                             const label =
