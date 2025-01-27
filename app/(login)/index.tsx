@@ -1,21 +1,17 @@
 import React from 'react';
-import { Button } from 'react-native-paper';
-import { View, StyleSheet } from 'react-native';
-import { router } from 'expo-router'; // Use useRouter do expo-router
+import { View, StyleSheet, Text } from 'react-native';
+import { Link } from 'expo-router'; 
 
 export default function LoginScreen({ navigation, route }: { navigation: any; route: any }) {
 
     return (
         <View style={styles.container}>
-            <Button
-                mode="contained"
-                onPress={() => navigation.navigate('HomeScreen')} // Navega para a rota dos tabs
-                style={styles.title}
-                contentStyle={{ height: 60 }}
-                uppercase={false}
+            <Link
+                href="(tabs)"
+                style={styles.link} 
             >
-                Entrar sem Login
-            </Button>
+                <Text style={styles.linkText}>Entrar sem Login</Text>
+            </Link>
         </View>
     );
 }
@@ -26,7 +22,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    title: {
-        marginBottom: 20,
+    link: {
+        backgroundColor: '#6200ee', // roxo 
+        borderRadius: 4,
+        paddingVertical: 16, 
+        paddingHorizontal: 32, 
+    },
+    linkText: {
+        color: 'white', 
+        fontSize: 16,
+        textAlign: 'center',
+        fontWeight: '500', 
     },
 });
