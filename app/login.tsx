@@ -1,10 +1,9 @@
 import React from 'react';
 import { Button } from 'react-native-paper';
 import { View, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router'; // Use useRouter do expo-router
+import { router } from 'expo-router'; // Use useRouter do expo-router
 
 export default function LoginScreen() {
-    const router = useRouter(); // Obtém o roteador
 
     return (
         <View style={styles.container}>
