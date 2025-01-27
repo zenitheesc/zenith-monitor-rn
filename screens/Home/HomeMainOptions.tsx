@@ -2,13 +2,16 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Avatar, Card, Icon } from 'react-native-paper';
 import { vw } from '../../utils/utils';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { HomeStackParamList } from '@/types/types';
 
 export default function HomeMainOptions() {
+    const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
     return (
         <View style={styles.cardsContainer}>
             <Card
                 style={styles.card}
-                onPress={() => console.log('Resgate com bluetooth')}
+                onPress={() => navigation.navigate('BluetoothScreen')}
                 elevation={1}
             >
                 <Card.Title

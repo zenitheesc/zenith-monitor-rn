@@ -4,7 +4,7 @@ import { Appbar } from 'react-native-paper';
 import HomeMainOptions from './HomeMainOptions';
 import { vh, vw } from '@/utils/utils';
 
-export default function HomeScreen({ navigation, route }: { navigation: any; route: any }) {
+export default function HomeScreen() {
     return (
         <View style={{ flex: 1 }}>
             <Appbar.Header mode="center-aligned" elevated>
