@@ -3,13 +3,13 @@ import { Button } from 'react-native-paper';
 import { View, StyleSheet } from 'react-native';
 import { router } from 'expo-router'; // Use useRouter do expo-router
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation, route }: { navigation: any; route: any }) {
 
     return (
         <View style={styles.container}>
             <Button
                 mode="contained"
-                onPress={() => router.push('(tabs)')} // Navega para a rota dos tabs
+                onPress={() => navigation.navigate('HomeScreen')} // Navega para a rota dos tabs
                 style={styles.title}
                 contentStyle={{ height: 60 }}
                 uppercase={false}
