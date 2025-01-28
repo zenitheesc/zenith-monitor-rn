@@ -1,17 +1,20 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { Link } from 'expo-router'; 
+import { View, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router'; 
+import { Button } from 'react-native-paper';
 
-export default function LoginScreen({ navigation, route }: { navigation: any; route: any }) {
-
+export default function LoginScreen() {
+    const router = useRouter(); 
     return (
         <View style={styles.container}>
-            <Link
-                href="(tabs)"
-                style={styles.link} 
+            <Button
+                mode="contained"
+                onPress={() => router.push('(tabs)')} 
+                style={styles.button}
+                contentStyle={{ height: 60 }}
             >
-                <Text style={styles.linkText}>Entrar sem Login</Text>
-            </Link>
+                Entrar sem Login
+            </Button>
         </View>
     );
 }
@@ -22,16 +25,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    link: {
-        backgroundColor: '#6200ee', // roxo 
-        borderRadius: 4,
-        paddingVertical: 16, 
-        paddingHorizontal: 32, 
-    },
-    linkText: {
-        color: 'white', 
-        fontSize: 16,
-        textAlign: 'center',
-        fontWeight: '500', 
+    button: {
+        borderRadius: 10,
+        elevation: 0,
+        alignContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
     },
 });
