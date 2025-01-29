@@ -3,7 +3,6 @@ import { View, StyleSheet, Image} from 'react-native';
 import { useRouter } from 'expo-router'; 
 import { Button } from 'react-native-paper';
 
-const { width } = Dimensions.get('window');
 export default function LoginScreen() {
     const router = useRouter(); 
 
