@@ -1,90 +1,109 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Appbar, Text } from 'react-native-paper';
-import { Button } from 'react-native-paper';
+import React, { useState } from 'react';
+import { StyleSheet, View, ScrollView } from 'react-native';
+import { Appbar, Text, Button, Avatar, Card, Icon  } from 'react-native-paper';
+import TrajectoryScreen from './TrajectoryScreen';
+import { vw } from '../../utils/utils';
 
-export default function MissionsScreen({ navigation, route }: { navigation: any; route: any }) {
-    return (
-        <View style={{ flex: 1 }}>
-            <Appbar.Header mode="center-aligned" elevated>
-                <Appbar.Content title="Missões" />
-            </Appbar.Header>
-            <View
-                style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Button
-                    mode="contained"
-                    icon="plus"
-                    onPress={() => navigation.navigate('CriarNovaCampanha')}
-                    style={styles.buttonNewCampaign}
-                    contentStyle={{ height: 60 }}
-                    uppercase={true}
-                >
-                    Botão
-                </Button>
+export default function MissionsScreen() {
+    const [currentScreen, setCurrentScreen] = useState('missions'); // 'missions' ou 'trajectory'
+    const [jsonUrl, setJsonUrl] = useState('');
+
+    const showTrajectory = (url) => {
+        setJsonUrl(url);
+        setCurrentScreen('trajectory');
+    };
+
+    const goBackToMissions = () => {
+        setCurrentScreen('missions');
+    };
+
+    if (currentScreen === 'missions') {
+        return (
+            <View style={{ flex: 1 }}>
+                <Appbar.Header mode="center-aligned" elevated>
+                    <Appbar.Content title="Missões" />
+                </Appbar.Header>
+                <View style={styles.cardsContainer}>
+                    <Card
+                        style={styles.card}
+                        onPress={() => showTrajectory('https://zenitheesc.github.io/launches-data/000_T4220752_day_0.json')}
+                        elevation={1}
+                    >
+                        <Card.Title
+                            title="Missão 1"
+                            left={(props) => <Avatar.Icon {...props} icon="map-marker-radius" />}
+                            right={(props) => <Icon {...props} source="chevron-right" />}
+                        />
+                    </Card>
+
+                    <Card
+                        style={styles.card}
+                        onPress={() => showTrajectory('https://zenitheesc.github.io/launches-data/012_J4840095_day_0.json')}
+                        elevation={1}
+                    >
+                        <Card.Title
+                            title="Missão 2"
+                            left={(props) => <Avatar.Icon {...props} icon="map-marker-radius" />}
+                            right={(props) => <Icon {...props} source="chevron-right" />}
+                        />
+                    </Card>
+
+                    <Card
+                        style={styles.card}
+                        onPress={() => showTrajectory('https://zenitheesc.github.io/launches-data/005_T4150774_day_1.json')}
+                        elevation={1}
+                    >
+                        <Card.Title
+                            title="Missão 3"
+                            left={(props) => <Avatar.Icon {...props} icon="map-marker-radius" />}
+                            right={(props) => <Icon {...props} source="chevron-right" />}
+                        />
+                    </Card>
+
+                    <Card
+                        style={styles.card}
+                        onPress={() => showTrajectory('https://zenitheesc.github.io/launches-data/014_J4840095_day_2.json')}
+                        elevation={1}
+                    >
+                        <Card.Title
+                            title="Missão 4"
+                            left={(props) => <Avatar.Icon {...props} icon="map-marker-radius" />}
+                            right={(props) => <Icon {...props} source="chevron-right" />}
+                        />
+                    </Card>
+                </View>
             </View>
-        </View>
-    );
+        );
+    }
+
+    if (currentScreen === 'trajectory') {
+        return (
+            <View style={{ flex: 1 }}>
+                <Appbar.Header mode="center-aligned" elevated>
+                    <Appbar.Content title="Trajetória" />
+                    <Appbar.Action icon="arrow-left" onPress={goBackToMissions} />
+                </Appbar.Header>
+                <TrajectoryScreen jsonUrl={jsonUrl} />
+            </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
-    logo: {
-        width: 40,
-        height: 40,
+    cardsContainer: {
+            flex: 1,
+            justifyContent: 'flex-start',
+            marginTop: 5,
+        },
+    card: {
+        margin: 5,
+        marginHorizontal: vw(2),
     },
     container: {
         flex: 1,
-        justifyContent: 'center',
     },
-    viewContainer: {
-        padding: 2,
-        margin: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1,
-    },
-    buttonNewCampaign: {
-        borderRadius: 10,
-        elevation: 0,
-        alignContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    textNewCampaign: {
-        color: 'white',
-        fontWeight: '700',
-        alignContent: 'center',
-        alignItems: 'center',
-    },
-    message: {
-        textAlign: 'center',
-        paddingBottom: 10,
-    },
-    camera: {
-        flex: 1,
-    },
-    buttonContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: 'transparent',
-        margin: 64,
-    },
-    button: {
-        flex: 1,
-        alignSelf: 'flex-end',
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'white',
-    },
-    textBarCode: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'black',
+    scrollViewContainer: {
+        flexGrow: 1,
+        padding: 16,
     },
 });
