@@ -1,12 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { Appbar, Text, Button, Avatar, Card, Icon  } from 'react-native-paper';
+import { Appbar, Avatar, Card, Icon } from 'react-native-paper';
 import TrajectoryScreen from './TrajectoryScreen';
 import { vw } from '../../utils/utils';
 
 export default function MissionsScreen() {
     const [currentScreen, setCurrentScreen] = useState('missions'); // 'missions' ou 'trajectory'
     const [jsonUrl, setJsonUrl] = useState('');
+    const [missions, setMissions] = useState([]);
+
+    useEffect(() => {
+        const loadIndexFile = async () => {
+            try {
+                const response = await fetch('https://zenitheesc.github.io/launches-data/index.json');
+                const data = await response.json();
+                setMissions(data); 
+            } catch (error) {
+                console.error('Erro ao carregar o arquivo índice:', error);
+            }
+        };
+
+        loadIndexFile();
+    }, []);
 
     const showTrajectory = (url) => {
         setJsonUrl(url);
@@ -23,55 +38,26 @@ export default function MissionsScreen() {
                 <Appbar.Header mode="center-aligned" elevated>
                     <Appbar.Content title="Missões" />
                 </Appbar.Header>
-                <View style={styles.cardsContainer}>
-                    <Card
-                        style={styles.card}
-                        onPress={() => showTrajectory('https://zenitheesc.github.io/launches-data/000_T4220752_day_0.json')}
-                        elevation={1}
-                    >
+                <ScrollView contentContainerStyle={styles.cardsContainer}>
+                    {missions.map((mission, index) => (
+                        <Card
+                            key={index}
+                            style={styles.card}
+                            onPress={() => showTrajectory(mission.download_url)}
+                            elevation={1}
+                        >
                         <Card.Title
-                            title="Missão 1"
+                            title={`Missão ${index + 1} - ${mission.launch_datetime}`}
+                            subtitle={`Cidade: ${mission.launch_city}\nAltitude Máxima: ${mission.max_altitude.toFixed(2)} m`}
+                            subtitleNumberOfLines={2} 
+                            titleNumberOfLines={1} 
                             left={(props) => <Avatar.Icon {...props} icon="map-marker-radius" />}
                             right={(props) => <Icon {...props} source="chevron-right" />}
+                            style={styles.cardTitle} 
                         />
-                    </Card>
-
-                    <Card
-                        style={styles.card}
-                        onPress={() => showTrajectory('https://zenitheesc.github.io/launches-data/012_J4840095_day_0.json')}
-                        elevation={1}
-                    >
-                        <Card.Title
-                            title="Missão 2"
-                            left={(props) => <Avatar.Icon {...props} icon="map-marker-radius" />}
-                            right={(props) => <Icon {...props} source="chevron-right" />}
-                        />
-                    </Card>
-
-                    <Card
-                        style={styles.card}
-                        onPress={() => showTrajectory('https://zenitheesc.github.io/launches-data/005_T4150774_day_1.json')}
-                        elevation={1}
-                    >
-                        <Card.Title
-                            title="Missão 3"
-                            left={(props) => <Avatar.Icon {...props} icon="map-marker-radius" />}
-                            right={(props) => <Icon {...props} source="chevron-right" />}
-                        />
-                    </Card>
-
-                    <Card
-                        style={styles.card}
-                        onPress={() => showTrajectory('https://zenitheesc.github.io/launches-data/014_J4840095_day_2.json')}
-                        elevation={1}
-                    >
-                        <Card.Title
-                            title="Missão 4"
-                            left={(props) => <Avatar.Icon {...props} icon="map-marker-radius" />}
-                            right={(props) => <Icon {...props} source="chevron-right" />}
-                        />
-                    </Card>
-                </View>
+                        </Card>
+                    ))}
+                </ScrollView>
             </View>
         );
     }
@@ -91,19 +77,20 @@ export default function MissionsScreen() {
 
 const styles = StyleSheet.create({
     cardsContainer: {
-            flex: 1,
-            justifyContent: 'flex-start',
-            marginTop: 5,
-        },
+        flexGrow: 1,
+        justifyContent: 'flex-start',
+        paddingVertical: 5,
+    },
     card: {
         margin: 5,
         marginHorizontal: vw(2),
     },
-    container: {
-        flex: 1,
+    subtitle: {
+        fontSize: 14,
+        lineHeight: 20, 
     },
-    scrollViewContainer: {
-        flexGrow: 1,
-        padding: 16,
+    cardTitle: {
+        height: 'auto', 
+        minHeight: 100, 
     },
 });
