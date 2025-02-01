@@ -57,7 +57,7 @@ const TrajectoryScreen = ({ jsonUrl }) => {
                         coordinate={coordinates[0]}
                         title="Início"
                         description="Ponto inicial da trajetória"
-                        image={require('../../assets/images/start-icon.png')} 
+                        image={require('../../assets/images/balloon-start-mission-icon.png')} 
                     />
                 )}
 
@@ -66,7 +66,7 @@ const TrajectoryScreen = ({ jsonUrl }) => {
                         coordinate={coordinates[coordinates.length - 1]}
                         title="Fim"
                         description="Ponto final da trajetória"
-                        image={require('../../assets/images/end-icon.png')} 
+                        image={require('../../assets/images/balloon-end-mission-icon.png')} 
                     />
                 )}
             </MapView>
