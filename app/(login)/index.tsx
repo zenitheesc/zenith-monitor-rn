@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Badge, Button, HelperText, Snackbar } from 'react-native-paper';
+import { Badge, Button, HelperText, Portal, Provider, Snackbar } from 'react-native-paper';
 
 export default function LoginScreen() {
     const router = useRouter();
@@ -11,7 +11,7 @@ export default function LoginScreen() {
     const onDismissSnackBar = () => setVisible(false);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <Image
                     source={require('../../assets/images/zenith-monitor-logo.png')}
@@ -29,7 +29,6 @@ export default function LoginScreen() {
                     labelStyle={styles.buttonText}
                 >
                     Continuar com o Google
-
                 </Button>
                 <Button
                     mode="contained"
@@ -37,7 +36,7 @@ export default function LoginScreen() {
                     style={styles.button}
                     labelStyle={styles.buttonText}
                 >
-                    Entrar sem Login
+                    Entrar sem conta
                 </Button>
             </View>
 
@@ -52,8 +51,7 @@ export default function LoginScreen() {
                 }}>
                 Indisponível. Tente novamente mais tarde.
             </Snackbar>
-
-        </View>
+        </SafeAreaView>
     );
 }
 
