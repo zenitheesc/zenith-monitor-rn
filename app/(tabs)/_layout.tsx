@@ -75,8 +75,8 @@ export default function TabLayout() {
                                 options.tabBarLabel !== undefined
                                     ? options.tabBarLabel
                                     : options.title !== undefined
-                                    ? options.title
-                                    : route.key;
+                                        ? options.title
+                                        : route.key;
 
                             return label.toString();
                         }}

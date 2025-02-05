@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { Appbar, Avatar, Card, Icon } from 'react-native-paper';
-import TrajectoryScreen from './TrajectoryScreen';
 import { vw } from '../../utils/utils';
+import { getAllMissionsSummary } from '@/services/MissionsSummaryApi';
+import { MissionSummary } from '@/types/types';
 
-export default function MissionsScreen() {
-    const [currentScreen, setCurrentScreen] = useState('missions'); // 'missions' ou 'trajectory'
-    const [jsonUrl, setJsonUrl] = useState('');
-    const [missions, setMissions] = useState([]);
+export default function MissionsScreen({ navigation, route }: { navigation: any, route: any }) {
+    const [jsonUrl, setJsonUrl] = useState<string>('');
+
+    const [missions, setMissions] = useState<MissionSummary[]>([]);
 
     useEffect(() => {
         const loadIndexFile = async () => {
             try {
-                const response = await fetch('https://zenitheesc.github.io/launches-data/index.json');
-                const data = await response.json();
-                setMissions(data); 
+                const response = await getAllMissionsSummary();
+                setMissions(response);
+                console.log('response:', response);
             } catch (error) {
                 console.error('Erro ao carregar o arquivo índice:', error);
             }
@@ -23,56 +24,38 @@ export default function MissionsScreen() {
         loadIndexFile();
     }, []);
 
-    const showTrajectory = (url) => {
+    const showTrajectory = (url: string) => {
         setJsonUrl(url);
-        setCurrentScreen('trajectory');
     };
 
-    const goBackToMissions = () => {
-        setCurrentScreen('missions');
-    };
 
-    if (currentScreen === 'missions') {
-        return (
-            <View style={{ flex: 1 }}>
-                <Appbar.Header mode="center-aligned" elevated>
-                    <Appbar.Content title="Missões" />
-                </Appbar.Header>
-                <ScrollView contentContainerStyle={styles.cardsContainer}>
-                    {missions.map((mission, index) => (
-                        <Card
-                            key={index}
-                            style={styles.card}
-                            onPress={() => showTrajectory(mission.download_url)}
-                            elevation={1}
-                        >
+    return (
+        <View style={{ flex: 1 }}>
+            <Appbar.Header mode="center-aligned" elevated>
+                <Appbar.Content title="Missões" />
+            </Appbar.Header>
+            <ScrollView contentContainerStyle={styles.cardsContainer}>
+                {missions?.map((mission, index) => (
+                    <Card
+                        key={index}
+                        style={styles.card}
+                        onPress={() => navigation.navigate("TrajectoryScreen", { jsonUrl: mission?.download_url })}
+                        elevation={1}
+                    >
                         <Card.Title
                             title={`Missão ${index + 1} - ${mission.launch_datetime}`}
                             subtitle={`Cidade: ${mission.launch_city}\nAltitude Máxima: ${mission.max_altitude.toFixed(2)} m`}
-                            subtitleNumberOfLines={2} 
-                            titleNumberOfLines={1} 
+                            subtitleNumberOfLines={2}
+                            titleNumberOfLines={1}
                             left={(props) => <Avatar.Icon {...props} icon="map-marker-radius" />}
                             right={(props) => <Icon {...props} source="chevron-right" />}
-                            style={styles.cardTitle} 
+                            style={styles.cardTitle}
                         />
-                        </Card>
-                    ))}
-                </ScrollView>
-            </View>
-        );
-    }
-
-    if (currentScreen === 'trajectory') {
-        return (
-            <View style={{ flex: 1 }}>
-                <Appbar.Header mode="center-aligned" elevated>
-                    <Appbar.Content title="Trajetória" />
-                    <Appbar.Action icon="arrow-left" onPress={goBackToMissions} />
-                </Appbar.Header>
-                <TrajectoryScreen jsonUrl={jsonUrl} />
-            </View>
-        );
-    }
+                    </Card>
+                ))}
+            </ScrollView>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -87,10 +70,10 @@ const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: 14,
-        lineHeight: 20, 
+        lineHeight: 20,
     },
     cardTitle: {
-        height: 'auto', 
-        minHeight: 100, 
+        height: 'auto',
+        minHeight: 100,
     },
 });
