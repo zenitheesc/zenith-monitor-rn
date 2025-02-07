@@ -26,3 +26,8 @@ export type MissionSummary = {
     max_altitude: number,
     launch_datetime: string,
 }
+
+export type Coordinates = {
+    latitude: number,
+    longitude: number,
+}

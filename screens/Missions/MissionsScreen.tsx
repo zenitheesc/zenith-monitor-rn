@@ -1,33 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { Appbar, Avatar, Card, Icon } from 'react-native-paper';
+import { ActivityIndicator, Appbar, Avatar, Card, Icon } from 'react-native-paper';
 import { vw } from '../../utils/utils';
 import { getAllMissionsSummary } from '@/services/MissionsSummaryApi';
 import { MissionSummary } from '@/types/types';
 
 export default function MissionsScreen({ navigation, route }: { navigation: any, route: any }) {
-    const [jsonUrl, setJsonUrl] = useState<string>('');
-
+    const [loading, setLoading] = useState<boolean>(true);
     const [missions, setMissions] = useState<MissionSummary[]>([]);
 
-    useEffect(() => {
-        const loadIndexFile = async () => {
-            try {
-                const response = await getAllMissionsSummary();
-                setMissions(response);
-                console.log('response:', response);
-            } catch (error) {
-                console.error('Erro ao carregar o arquivo índice:', error);
-            }
-        };
-
-        loadIndexFile();
-    }, []);
-
-    const showTrajectory = (url: string) => {
-        setJsonUrl(url);
+    const loadIndexFile = async () => {
+        try {
+            const response = await getAllMissionsSummary();
+            setMissions(response);
+        } catch (error) {
+            console.error('Erro ao carregar o arquivo índice:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
+    useEffect(() => {
+        loadIndexFile();
+    }, []);
 
     return (
         <View style={{ flex: 1 }}>
@@ -35,7 +30,9 @@ export default function MissionsScreen({ navigation, route }: { navigation: any,
                 <Appbar.Content title="Missões" />
             </Appbar.Header>
             <ScrollView contentContainerStyle={styles.cardsContainer}>
-                {missions?.map((mission, index) => (
+                {loading && <ActivityIndicator size="large" color="#F8BD00" />}
+
+                {!loading && missions?.map((mission, index) => (
                     <Card
                         key={index}
                         style={styles.card}
@@ -53,6 +50,12 @@ export default function MissionsScreen({ navigation, route }: { navigation: any,
                         />
                     </Card>
                 ))}
+
+                {!loading && missions.length === 0 &&
+                    <Card style={styles.card}>
+                        <Card.Title title="Nenhuma missão encontrada" />
+                    </Card>
+                }
             </ScrollView>
         </View>
     );
