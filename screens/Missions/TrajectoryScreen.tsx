@@ -14,18 +14,24 @@ const regionSPDefault: RegionDataApi = {
 export default function TrajectoryScreen({ navigation, route }: { navigation: any, route: any }) {
     const { jsonUrl } = route.params;
     const [coordinates, setCoordinates] = useState([]);
-    const [region, setRegion] = useState(regionSPDefault);
+    const [region, setRegion] = useState({
+        latitude: -23.3282,
+        longitude: -51.13811,
+        latitudeDelta: 0.5,
+        longitudeDelta: 0.5,
+    });
 
     const loadTrajectoryData = async () => {
         try {
             const response = await fetch(jsonUrl);
             const data = await response.json();
+            console.log("data", data[0])
             const trajectory = data.map((item: any) => ({
-                latitude: item.latitude,
-                longitude: item.longitude,
+                latitude: item?.lat,
+                longitude: item?.lon,
             }));
+            console.log("trajectory", trajectory[0])
             setCoordinates(trajectory);
-            console.log('Trajetória:', trajectory);
 
             if (trajectory.length > 0) {
                 setRegion({
