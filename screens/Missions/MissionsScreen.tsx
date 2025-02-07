@@ -12,7 +12,7 @@ export default function MissionsScreen({ navigation, route }: { navigation: any,
     const loadIndexFile = async () => {
         try {
             const response = await getAllMissionsSummary();
-            setMissions(response);
+            setMissions(response || []);
         } catch (error) {
             console.error('Erro ao carregar o arquivo índice:', error);
         } finally {
