@@ -1,90 +1,82 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Appbar, Text } from 'react-native-paper';
-import { Button } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, ScrollView } from 'react-native';
+import { ActivityIndicator, Appbar, Avatar, Card, Icon } from 'react-native-paper';
+import { vw } from '../../utils/utils';
+import { getAllMissionsSummary } from '@/services/MissionsSummaryApi';
+import { MissionSummary } from '@/types/types';
 
-export default function MissionsScreen({ navigation, route }: { navigation: any; route: any }) {
+export default function MissionsScreen({ navigation, route }: { navigation: any, route: any }) {
+    const [loading, setLoading] = useState<boolean>(true);
+    const [missions, setMissions] = useState<MissionSummary[]>([]);
+
+    const loadIndexFile = async () => {
+        try {
+            const response = await getAllMissionsSummary();
+            setMissions(response);
+        } catch (error) {
+            console.error('Erro ao carregar o arquivo índice:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadIndexFile();
+    }, []);
+
     return (
         <View style={{ flex: 1 }}>
             <Appbar.Header mode="center-aligned" elevated>
                 <Appbar.Content title="Missões" />
             </Appbar.Header>
-            <View
-                style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Button
-                    mode="contained"
-                    icon="plus"
-                    onPress={() => navigation.navigate('CriarNovaCampanha')}
-                    style={styles.buttonNewCampaign}
-                    contentStyle={{ height: 60 }}
-                    uppercase={true}
-                >
-                    Botão
-                </Button>
-            </View>
+            <ScrollView contentContainerStyle={styles.cardsContainer}>
+                {loading && <ActivityIndicator size="large" color="#F8BD00" />}
+
+                {!loading && missions?.map((mission, index) => (
+                    <Card
+                        key={index}
+                        style={styles.card}
+                        onPress={() => navigation.navigate("TrajectoryScreen", { jsonUrl: mission?.download_url })}
+                        elevation={1}
+                    >
+                        <Card.Title
+                            title={`Missão ${index + 1} - ${mission.launch_datetime}`}
+                            subtitle={`Cidade: ${mission.launch_city}\nAltitude Máxima: ${mission.max_altitude.toFixed(2)} m`}
+                            subtitleNumberOfLines={2}
+                            titleNumberOfLines={1}
+                            left={(props) => <Avatar.Icon {...props} icon="map-marker-radius" />}
+                            right={(props) => <Icon {...props} source="chevron-right" />}
+                            style={styles.cardTitle}
+                        />
+                    </Card>
+                ))}
+
+                {!loading && missions.length === 0 &&
+                    <Card style={styles.card}>
+                        <Card.Title title="Nenhuma missão encontrada" />
+                    </Card>
+                }
+            </ScrollView>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    logo: {
-        width: 40,
-        height: 40,
+    cardsContainer: {
+        flexGrow: 1,
+        justifyContent: 'flex-start',
+        paddingVertical: 5,
     },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
+    card: {
+        margin: 5,
+        marginHorizontal: vw(2),
     },
-    viewContainer: {
-        padding: 2,
-        margin: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1,
+    subtitle: {
+        fontSize: 14,
+        lineHeight: 20,
     },
-    buttonNewCampaign: {
-        borderRadius: 10,
-        elevation: 0,
-        alignContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    textNewCampaign: {
-        color: 'white',
-        fontWeight: '700',
-        alignContent: 'center',
-        alignItems: 'center',
-    },
-    message: {
-        textAlign: 'center',
-        paddingBottom: 10,
-    },
-    camera: {
-        flex: 1,
-    },
-    buttonContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: 'transparent',
-        margin: 64,
-    },
-    button: {
-        flex: 1,
-        alignSelf: 'flex-end',
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'white',
-    },
-    textBarCode: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'black',
+    cardTitle: {
+        height: 'auto',
+        minHeight: 100,
     },
 });

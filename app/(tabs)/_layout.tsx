@@ -61,21 +61,21 @@ export default function TabLayout() {
                                 : null;
                         }
 
-                        return null;
-                    }}
-                    renderTouchable={({ key, ...props }) => (
-                        <TouchableRipple key={key} {...props} />
-                    )}
-                    labeled={false}
-                    compact={true}
-                    getLabelText={({ route }) => {
-                        const { options } = descriptors[route.key];
-                        const label =
-                            options.tabBarLabel !== undefined
-                                ? options.tabBarLabel
-                                : options.title !== undefined
-                                    ? options.title
-                                    : route.key;
+                            return null;
+                        }}
+                        renderTouchable={({ key, ...props }) => (
+                            <TouchableRipple key={key} {...props} />
+                        )}
+                        labeled={false}
+                        compact={true}
+                        getLabelText={({ route }) => {
+                            const { options } = descriptors[route.key];
+                            const label =
+                                options.tabBarLabel !== undefined
+                                    ? options.tabBarLabel
+                                    : options.title !== undefined
+                                        ? options.title
+                                        : route.key;
 
                         return label.toString();
                     }}

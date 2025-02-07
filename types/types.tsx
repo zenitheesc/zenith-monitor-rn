@@ -4,3 +4,30 @@ export type HomeStackParamList = {
     BluetoothScreen: undefined;
     Estufa: undefined;
 };
+
+export type MissionsStackParamList = {
+    Missions: undefined;
+    Trajectory: {
+        trajectory_url: string;
+    }
+};
+
+export type RegionDataApi = {
+    latitude: number,
+    longitude: number,
+    latitudeDelta: number,
+    longitudeDelta: number,
+}
+
+export type MissionSummary = {
+    name: string,
+    download_url: string,
+    launch_city: string,
+    max_altitude: number,
+    launch_datetime: string,
+}
+
+export type Coordinates = {
+    latitude: number,
+    longitude: number,
+}
