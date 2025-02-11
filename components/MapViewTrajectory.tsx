@@ -1,9 +1,15 @@
 import React, { useRef } from 'react';
-import { Coordinates } from '@/types/types';
+import { Coordinates, MapViewType } from '@/types/types';
 import { StyleSheet } from 'react-native';
 import MapView, { Polyline, Marker } from 'react-native-maps';
 
-export default function MapViewTrajectory({ coordinates }: { coordinates: Coordinates[] }) {
+export default function MapViewTrajectory({
+    coordinates,
+    mapType,
+}: {
+    coordinates: Coordinates[];
+    mapType: MapViewType;
+}) {
     const startingEndingCoord = [coordinates[0], coordinates[coordinates.length - 1]];
     let mapRef = useRef<MapView>(null);
 
@@ -23,6 +29,7 @@ export default function MapViewTrajectory({ coordinates }: { coordinates: Coordi
                     onMapReady={() => {
                         fitMapCoordinates();
                     }}
+                    mapType={mapType}
                 >
                     <Polyline coordinates={coordinates} strokeColor="#9449de" strokeWidth={2} />
                     <Marker

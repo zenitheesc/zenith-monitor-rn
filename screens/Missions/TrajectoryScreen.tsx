@@ -1,13 +1,17 @@
 import MapViewTrajectory from '@/components/MapViewTrajectory';
-import { Coordinates } from '@/types/types';
+import { MAP_VIEW_TYPES } from '@/types/constants';
+import { Coordinates, MapViewType } from '@/types/types';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Appbar } from 'react-native-paper';
+import { ActivityIndicator, Appbar, Menu } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TrajectoryScreen({ navigation, route }: { navigation: any; route: any }) {
     const { jsonUrl } = route.params;
     const [coordinates, setCoordinates] = useState<Coordinates[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [visible, setVisible] = useState(false);
+    const [mapType, setMapType] = useState<MapViewType>(MAP_VIEW_TYPES.STANDARD);
 
     const loadTrajectoryData = async () => {
         try {
@@ -25,6 +29,14 @@ export default function TrajectoryScreen({ navigation, route }: { navigation: an
         }
     };
 
+    const openMenu = () => setVisible(true);
+    const closeMenu = () => setVisible(false);
+
+    const changeMapType = (type: MapViewType) => {
+        setMapType(type);
+        closeMenu();
+    };
+
     useEffect(() => {
         loadTrajectoryData();
     }, []);
@@ -34,10 +46,31 @@ export default function TrajectoryScreen({ navigation, route }: { navigation: an
             <Appbar.Header mode="center-aligned" elevated>
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
                 <Appbar.Content title="Missões" />
+                <Menu
+                    visible={visible}
+                    onDismiss={closeMenu}
+                    anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
+                >
+                    <SafeAreaView>
+                        <Menu.Item
+                            onPress={() => changeMapType(MAP_VIEW_TYPES.STANDARD)}
+                            title="Mapa"
+                        />
+                        <Menu.Item
+                            onPress={() => changeMapType(MAP_VIEW_TYPES.SATELLITE)}
+                            title="Satélite"
+                        />
+                        <Menu.Item
+                            onPress={() => changeMapType(MAP_VIEW_TYPES.TERRAIN)}
+                            title="Terreno"
+                        />
+                    </SafeAreaView>
+                </Menu>
             </Appbar.Header>
+
             {loading && <ActivityIndicator size="large" color="#F8BD00" />}
             {!loading && coordinates?.length >= 1 && (
-                <MapViewTrajectory coordinates={coordinates} />
+                <MapViewTrajectory coordinates={coordinates} mapType={mapType} />
             )}
         </View>
     );
