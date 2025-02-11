@@ -1,10 +1,10 @@
 import MapViewTrajectory from '@/components/MapViewTrajectory';
-import { Coordinates, RegionDataApi } from '@/types/types';
+import { Coordinates } from '@/types/types';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Appbar } from 'react-native-paper';
 
-export default function TrajectoryScreen({ navigation, route }: { navigation: any, route: any }) {
+export default function TrajectoryScreen({ navigation, route }: { navigation: any; route: any }) {
     const { jsonUrl } = route.params;
     const [coordinates, setCoordinates] = useState<Coordinates[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -17,7 +17,7 @@ export default function TrajectoryScreen({ navigation, route }: { navigation: an
                 latitude: item?.lat,
                 longitude: item?.lon,
             }));
-            setCoordinates(trajectory);            
+            setCoordinates(trajectory);
         } catch (error) {
             console.error('Erro ao buscar dados de trajetória', error);
         } finally {
@@ -35,11 +35,13 @@ export default function TrajectoryScreen({ navigation, route }: { navigation: an
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
                 <Appbar.Content title="Missões" />
             </Appbar.Header>
-            { loading && <ActivityIndicator size="large" color="#F8BD00" /> }
-            {!loading && coordinates?.length > 1 && <MapViewTrajectory coordinates={coordinates} />}
+            {loading && <ActivityIndicator size="large" color="#F8BD00" />}
+            {!loading && coordinates?.length >= 1 && (
+                <MapViewTrajectory coordinates={coordinates} />
+            )}
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
