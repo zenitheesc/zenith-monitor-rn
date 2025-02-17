@@ -1,50 +1,40 @@
 import MapViewTrajectory from '@/components/MapViewTrajectory';
-import { RegionDataApi } from '@/types/types';
+import { MAP_VIEW_TYPES } from '@/types/constants';
+import { Coordinates, MapViewType } from '@/types/types';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Appbar } from 'react-native-paper';
+import { ActivityIndicator, Appbar, Menu } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const regionSPDefault: RegionDataApi = {
-    latitude: -23.3282,
-    longitude: -51.13811,
-    latitudeDelta: 0.5,
-    longitudeDelta: 0.5,
-}
-
-export default function TrajectoryScreen({ navigation, route }: { navigation: any, route: any }) {
+export default function TrajectoryScreen({ navigation, route }: { navigation: any; route: any }) {
     const { jsonUrl } = route.params;
-    const [coordinates, setCoordinates] = useState([]);
-    const [region, setRegion] = useState({
-        latitude: -23.3282,
-        longitude: -51.13811,
-        latitudeDelta: 0.5,
-        longitudeDelta: 0.5,
-    });
+    const [coordinates, setCoordinates] = useState<Coordinates[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [visible, setVisible] = useState(false);
+    const [mapType, setMapType] = useState<MapViewType>(MAP_VIEW_TYPES.STANDARD);
 
     const loadTrajectoryData = async () => {
         try {
             const response = await fetch(jsonUrl);
             const data = await response.json();
-            const trajectory = data.map((item: any) => ({
+            const trajectory = data?.map((item: any) => ({
                 latitude: item?.lat,
                 longitude: item?.lon,
             }));
             setCoordinates(trajectory);
-
-            if (trajectory.length > 0) {
-                setRegion({
-                    latitude: trajectory[0].latitude,
-                    longitude: trajectory[0].longitude,
-                    latitudeDelta: 0.5,
-                    longitudeDelta: 0.5,
-                });
-            }
         } catch (error) {
             console.error('Erro ao buscar dados de trajetória', error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const openMenu = () => setVisible(true);
+    const closeMenu = () => setVisible(false);
+
+    const changeMapType = (type: MapViewType) => {
+        setMapType(type);
+        closeMenu();
     };
 
     useEffect(() => {
@@ -56,12 +46,35 @@ export default function TrajectoryScreen({ navigation, route }: { navigation: an
             <Appbar.Header mode="center-aligned" elevated>
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
                 <Appbar.Content title="Missões" />
+                <Menu
+                    visible={visible}
+                    onDismiss={closeMenu}
+                    anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
+                >
+                    <SafeAreaView>
+                        <Menu.Item
+                            onPress={() => changeMapType(MAP_VIEW_TYPES.STANDARD)}
+                            title="Mapa"
+                        />
+                        <Menu.Item
+                            onPress={() => changeMapType(MAP_VIEW_TYPES.SATELLITE)}
+                            title="Satélite"
+                        />
+                        <Menu.Item
+                            onPress={() => changeMapType(MAP_VIEW_TYPES.TERRAIN)}
+                            title="Terreno"
+                        />
+                    </SafeAreaView>
+                </Menu>
             </Appbar.Header>
-            { loading && <ActivityIndicator size="large" color="#F8BD00" /> }
-            {!loading && <MapViewTrajectory coordinates={coordinates} region={region} />}
+
+            {loading && <ActivityIndicator size="large" color="#F8BD00" />}
+            {!loading && coordinates?.length >= 1 && (
+                <MapViewTrajectory coordinates={coordinates} mapType={mapType} />
+            )}
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
