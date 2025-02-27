@@ -1,90 +1,114 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Appbar, Text } from 'react-native-paper';
-import { Button } from 'react-native-paper';
+import { Appbar, Button, Modal, Portal, Text, Provider } from 'react-native-paper';
 
-export default function MenuScreen({ navigation, route }: { navigation: any; route: any }) {
+export default function MenuScreen({ navigation }: { navigation: any }) {
+
+    const [visible, setVisible] = useState(false); 
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
+
+    const confirmLogout = () => {
+        hideModal(); 
+        navigation.reset({
+            index: 0,
+            routes: [{ name: '(login)/index' }],
+        });
+    };
+
     return (
-        <View style={{ flex: 1 }}>
-            <Appbar.Header mode="center-aligned" elevated>
-                <Appbar.Content title="Menu" />
-            </Appbar.Header>
-            <View
-                style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Button
-                    mode="contained"
-                    icon="plus"
-                    onPress={() => navigation.navigate('CriarNovaCampanha')}
-                    style={styles.buttonNewCampaign}
-                    contentStyle={{ height: 60 }}
-                    uppercase={true}
-                >
-                    Botão
-                </Button>
+        <Provider>
+            <View style={{ flex: 1 }}>
+                <Appbar.Header mode="center-aligned" elevated>
+                    <Appbar.Content title="Menu" />
+                </Appbar.Header>
+
+                <View style={{ flex: 1, justifyContent: 'flex-end', padding: 20 }}>
+                    <Button
+                        mode="contained"
+                        icon="logout"
+                        onPress={showModal} 
+                        style={styles.button}
+                        contentStyle={styles.buttonContent}
+                        uppercase={true}
+                    >
+                        Logout
+                    </Button>
+                </View>
+
+                <Portal>
+                    <Modal
+                        visible={visible} 
+                        onDismiss={hideModal} 
+                        contentContainerStyle={styles.modalContainer}
+                    >
+                        <View style={styles.modalContent}>
+                            <Text style={styles.modalTitle}>Logout</Text>
+                            <Text style={styles.modalMessage}>Você tem certeza que deseja sair?</Text>
+                            <View style={styles.modalButtonsContainer}>
+                                <Button
+                                    mode="contained"
+                                    onPress={hideModal} 
+                                    style={styles.modalButton}
+                                >
+                                    Não
+                                </Button>
+                                <Button
+                                    mode="contained"
+                                    onPress={confirmLogout} 
+                                    style={styles.modalButton}
+                                >
+                                    Sim
+                                </Button>
+                            </View>
+                        </View>
+                    </Modal>
+                </Portal>
             </View>
-        </View>
+        </Provider>
     );
 }
 
 const styles = StyleSheet.create({
-    logo: {
-        width: 40,
-        height: 40,
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    viewContainer: {
-        padding: 2,
-        margin: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1,
-    },
-    buttonNewCampaign: {
+    button: {
+        width: '100%',
         borderRadius: 10,
         elevation: 0,
-        alignContent: 'center',
+    },
+    buttonContent: {
+        height: 60,
+        justifyContent: 'center',
+    },
+    modalContainer: {
+        justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 20,
+        padding: 20,
     },
-    textNewCampaign: {
-        color: 'white',
-        fontWeight: '700',
-        alignContent: 'center',
-        alignItems: 'center',
+    modalContent: {
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 20,
+        width: '90%',
     },
-    message: {
-        textAlign: 'center',
-        paddingBottom: 10,
-    },
-    camera: {
-        flex: 1,
-    },
-    buttonContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: 'transparent',
-        margin: 64,
-    },
-    button: {
-        flex: 1,
-        alignSelf: 'flex-end',
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'white',
-    },
-    textBarCode: {
-        fontSize: 24,
-        fontWeight: 'bold',
+    modalTitle: {
         color: 'black',
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    modalMessage: {
+        color: 'black',
+        fontSize: 16,
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    modalButtonsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    modalButton: {
+        flex: 1,
+        marginHorizontal: 5,
     },
 });

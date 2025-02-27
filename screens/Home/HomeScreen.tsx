@@ -1,32 +1,16 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Appbar, Text } from 'react-native-paper';
-import { Button } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Appbar } from 'react-native-paper';
+import HomeMainOptions from './HomeMainOptions';
+import { vh, vw } from '@/utils/utils';
 
-export default function HomeScreen({ navigation, route }: { navigation: any; route: any }) {
+export default function HomeScreen() {
     return (
-        <View>
+        <View style={{ flex: 1 }}>
             <Appbar.Header mode="center-aligned" elevated>
                 <Appbar.Content title="Início" />
             </Appbar.Header>
-            <View
-                style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Button
-                    mode="contained"
-                    icon="plus"
-                    onPress={() => navigation.navigate('CriarNovaCampanha')}
-                    style={styles.buttonNewCampaign}
-                    contentStyle={{ height: 60 }}
-                    uppercase={true}
-                >
-                    Botão
-                </Button>
-            </View>
+            <HomeMainOptions />
         </View>
     );
 }
@@ -38,7 +22,9 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
+        marginHorizontal: vw(2),
+        marginTop: vh(5),
     },
     viewContainer: {
         padding: 2,
