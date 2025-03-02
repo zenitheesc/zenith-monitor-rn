@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Coordinates, MapViewType } from '@/types/types';
 import { StyleSheet } from 'react-native';
 import MapView, { Polyline, Marker } from 'react-native-maps';
+import { PROVIDER_GOOGLE } from 'react-native-maps';
 
 export default function MapViewTrajectory({
     coordinates,
@@ -30,6 +31,7 @@ export default function MapViewTrajectory({
                         fitMapCoordinates();
                     }}
                     mapType={mapType}
+                    provider={PROVIDER_GOOGLE}
                 >
                     <Polyline coordinates={coordinates} strokeColor="#9449de" strokeWidth={2} />
                     <Marker
