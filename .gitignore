@@ -37,4 +37,8 @@ yarn-error.*
 
 app-example
 
-.env
+.env.local
+.env.development
+
+./credentials.json
+credentials.json
