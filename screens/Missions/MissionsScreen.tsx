@@ -4,6 +4,7 @@ import {
     ActivityIndicator,
     Appbar,
     Avatar,
+    Button,
     Card,
     Chip,
     IconButton,
@@ -14,6 +15,7 @@ import { getAllMissionsSummary } from '@/services/MissionsSummaryApi';
 import { MissionSummary } from '@/types/types';
 import ProgressStepV2 from '../../components/ProgressStepV2';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Picker } from '@react-native-picker/picker';
 
 const CLOSED_MENU_INDEX = -1;
 
@@ -24,6 +26,8 @@ export default function MissionsScreen({ navigation, route }: { navigation: any;
     const openMenu = () => setVisible(true);
     const closeMenu = () => setVisible(false);
     const [openMenuIndex, setOpenMenuIndex] = useState(CLOSED_MENU_INDEX);
+    const [selectedLanguage, setSelectedLanguage] = useState();
+    const [showDropdown, setShowDropdown] = useState(false);
 
     const loadIndexFile = async () => {
         try {
@@ -44,6 +48,7 @@ export default function MissionsScreen({ navigation, route }: { navigation: any;
         <View style={{ flex: 1 }}>
             <Appbar.Header mode="center-aligned" elevated>
                 <Appbar.Content title="Missões" />
+                <Appbar.Action icon="filter-menu" onPress={openMenu} />
             </Appbar.Header>
             <ScrollView contentContainerStyle={styles.cardsContainer}>
                 {loading && <ActivityIndicator size="large" color="#F8BD00" />}
@@ -78,9 +83,11 @@ export default function MissionsScreen({ navigation, route }: { navigation: any;
                                             />
                                         }
                                     >
-                                        <Menu.Item onPress={() => {}} title="Mapa" />
-                                        <Menu.Item onPress={() => {}} title="Satélite" />
-                                        <Menu.Item onPress={() => {}} title="Terreno" />
+                                        <Menu.Item
+                                            onPress={() => {}}
+                                            disabled
+                                            title="Visualizar dados (.json)"
+                                        />
                                     </Menu>
                                 )}
                                 style={styles.cardTitle}
