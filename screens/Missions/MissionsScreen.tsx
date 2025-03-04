@@ -6,17 +6,24 @@ import {
     Avatar,
     Card,
     Chip,
-    Icon,
     IconButton,
+    Menu,
 } from 'react-native-paper';
 import { vw, formatDateToReadableString, convertMeterToKilometer } from '../../utils/utils';
 import { getAllMissionsSummary } from '@/services/MissionsSummaryApi';
 import { MissionSummary } from '@/types/types';
 import ProgressStepV2 from '../../components/ProgressStepV2';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+const CLOSED_MENU_INDEX = -1;
 
 export default function MissionsScreen({ navigation, route }: { navigation: any; route: any }) {
     const [loading, setLoading] = useState<boolean>(true);
     const [missions, setMissions] = useState<MissionSummary[]>([]);
+    const [visible, setVisible] = useState(false);
+    const openMenu = () => setVisible(true);
+    const closeMenu = () => setVisible(false);
+    const [openMenuIndex, setOpenMenuIndex] = useState(CLOSED_MENU_INDEX);
 
     const loadIndexFile = async () => {
         try {
@@ -58,13 +65,23 @@ export default function MissionsScreen({ navigation, route }: { navigation: any;
                                 subtitle={formatDateToReadableString(mission.launch_datetime)}
                                 left={(props) => <Avatar.Icon {...props} icon="airballoon" />}
                                 right={(props) => (
-                                    <IconButton
+                                    <Menu
                                         {...props}
-                                        icon="dots-vertical"
-                                        size={30}
-                                        style={{ marginTop: -25 }}
-                                        onPress={() => console.log('Pressed')}
-                                    />
+                                        visible={openMenuIndex === index}
+                                        onDismiss={() => setOpenMenuIndex(CLOSED_MENU_INDEX)}
+                                        anchor={
+                                            <IconButton
+                                                icon="dots-vertical"
+                                                size={30}
+                                                style={{ marginTop: -25 }}
+                                                onPress={() => setOpenMenuIndex(index)}
+                                            />
+                                        }
+                                    >
+                                        <Menu.Item onPress={() => {}} title="Mapa" />
+                                        <Menu.Item onPress={() => {}} title="Satélite" />
+                                        <Menu.Item onPress={() => {}} title="Terreno" />
+                                    </Menu>
                                 )}
                                 style={styles.cardTitle}
                             />
