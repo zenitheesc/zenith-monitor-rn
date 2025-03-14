@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView, Linking } from 'react-native';
 import {
     ActivityIndicator,
     Appbar,
     Avatar,
-    Button,
     Card,
     Chip,
     IconButton,
@@ -14,8 +13,6 @@ import { vw, formatDateToReadableString, convertMeterToKilometer } from '../../u
 import { getAllMissionsSummary } from '@/services/MissionsSummaryApi';
 import { MissionSummary } from '@/types/types';
 import ProgressStepV2 from '../../components/ProgressStepV2';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Picker } from '@react-native-picker/picker';
 
 const CLOSED_MENU_INDEX = -1;
 
@@ -27,7 +24,6 @@ export default function MissionsScreen({ navigation, route }: { navigation: any;
     const closeMenu = () => setVisible(false);
     const [openMenuIndex, setOpenMenuIndex] = useState(CLOSED_MENU_INDEX);
     const [selectedLanguage, setSelectedLanguage] = useState();
-    const [showDropdown, setShowDropdown] = useState(false);
 
     const loadIndexFile = async () => {
         try {
@@ -84,8 +80,12 @@ export default function MissionsScreen({ navigation, route }: { navigation: any;
                                         }
                                     >
                                         <Menu.Item
-                                            onPress={() => {}}
-                                            disabled
+                                            leadingIcon={'open-in-new'}
+                                            onPress={() =>
+                                                Linking.openURL(mission.download_url).catch((err) =>
+                                                    console.error('Erro ao abrir URL:', err)
+                                                )
+                                            }
                                             title="Visualizar dados (.json)"
                                         />
                                     </Menu>
@@ -115,7 +115,7 @@ export default function MissionsScreen({ navigation, route }: { navigation: any;
                                                     icon: 'map-marker',
                                                 },
                                                 {
-                                                    name: mission.launch_city,
+                                                    name: mission.landing_city,
                                                     icon: 'map-marker-radius',
                                                 },
                                             ]}
