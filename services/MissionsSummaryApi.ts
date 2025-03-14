@@ -1,4 +1,4 @@
-import axios, { all } from 'axios';
+import axios from 'axios';
 import config from './config';
 
 const MissionsSummaryApi = axios.create({ baseURL: config.LaunchesDataApi });

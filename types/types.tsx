@@ -25,6 +25,7 @@ export type MissionSummary = {
     name: string;
     download_url: string;
     launch_city: string;
+    landing_city: string;
     max_altitude: number;
     launch_datetime: string;
 };
