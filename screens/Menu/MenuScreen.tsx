@@ -3,13 +3,12 @@ import { StyleSheet, View } from 'react-native';
 import { Appbar, Button, Modal, Portal, Text, Provider } from 'react-native-paper';
 
 export default function MenuScreen({ navigation }: { navigation: any }) {
-
-    const [visible, setVisible] = useState(false); 
+    const [visible, setVisible] = useState(false);
     const showModal = () => setVisible(true);
     const hideModal = () => setVisible(false);
 
     const confirmLogout = () => {
-        hideModal(); 
+        hideModal();
         navigation.reset({
             index: 0,
             routes: [{ name: '(login)/index' }],
@@ -27,7 +26,7 @@ export default function MenuScreen({ navigation }: { navigation: any }) {
                     <Button
                         mode="contained"
                         icon="logout"
-                        onPress={showModal} 
+                        onPress={showModal}
                         style={styles.button}
                         contentStyle={styles.buttonContent}
                         uppercase={true}
@@ -38,24 +37,26 @@ export default function MenuScreen({ navigation }: { navigation: any }) {
 
                 <Portal>
                     <Modal
-                        visible={visible} 
-                        onDismiss={hideModal} 
+                        visible={visible}
+                        onDismiss={hideModal}
                         contentContainerStyle={styles.modalContainer}
                     >
                         <View style={styles.modalContent}>
                             <Text style={styles.modalTitle}>Logout</Text>
-                            <Text style={styles.modalMessage}>Você tem certeza que deseja sair?</Text>
+                            <Text style={styles.modalMessage}>
+                                Você tem certeza que deseja sair?
+                            </Text>
                             <View style={styles.modalButtonsContainer}>
                                 <Button
                                     mode="contained"
-                                    onPress={hideModal} 
+                                    onPress={hideModal}
                                     style={styles.modalButton}
                                 >
                                     Não
                                 </Button>
                                 <Button
                                     mode="contained"
-                                    onPress={confirmLogout} 
+                                    onPress={confirmLogout}
                                     style={styles.modalButton}
                                 >
                                     Sim
