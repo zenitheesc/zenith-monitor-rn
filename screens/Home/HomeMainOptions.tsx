@@ -15,7 +15,7 @@ export default function HomeMainOptions() {
                 elevation={1}
             >
                 <Card.Title
-                    title="Resgate com Bluetooth"
+                    title="Resgatar via Bluetooth"
                     left={(props) => <Avatar.Icon {...props} icon="bluetooth" />}
                     right={(props) => <Icon {...props} source="chevron-right" />}
                 />
