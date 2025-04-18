@@ -14,7 +14,7 @@ import {
 import { bluetoothService } from '@/services/BluetoothService';
 import { BluetoothDevice } from 'react-native-bluetooth-classic';
 
-export default function BluetoothScreen() {
+export default function BluetoothScreen({ navigation }: any) {
     const [devices, setDevices] = useState<BluetoothDevice[]>([]);
     const [connected, setConnected] = useState(false);
     const [received, setReceived] = useState('');
@@ -27,16 +27,6 @@ export default function BluetoothScreen() {
         try {
             const bonded = await bluetoothService.getBondedDevices();
             setDevices(bonded);
-        } catch (err: any) {
-            setError(err.message);
-        }
-    };
-
-    const connectToDevice = async (address: string) => {
-        try {
-            await bluetoothService.connect(address);
-            setConnected(true);
-            bluetoothService.onDataReceived((data) => setReceived((prev) => prev + data));
         } catch (err: any) {
             setError(err.message);
         }
@@ -59,10 +49,6 @@ export default function BluetoothScreen() {
         }
     };
 
-    useEffect(() => {
-        return () => bluetoothService.removeAllListeners();
-    }, []);
-
     const checkBluetoothEnabled = async () => {
         const enabled = await bluetoothService.isBluetoothEnabled();
         setBluetoothIsEnabled(enabled);
@@ -72,11 +58,15 @@ export default function BluetoothScreen() {
         checkBluetoothEnabled();
     }, []);
 
+    const handleDeviceSelect = (device: BluetoothDevice) => {
+        navigation.navigate('BluetoothChat', { device });
+    };
+
     return (
         <View style={styles.container}>
-            <Appbar.Header mode="center-aligned" elevated>
+            {/* <Appbar.Header mode="center-aligned" elevated>
                 <Appbar.Content title="Resgate" />
-            </Appbar.Header>
+            </Appbar.Header> */}
 
             <Surface
                 style={{
@@ -147,18 +137,18 @@ export default function BluetoothScreen() {
                     }}
                 >
                     {devices.length > 0 &&
-                        devices.map((d, idx) => (
+                        devices.map((device, idx) => (
                             <List.Item
-                                key={d.address}
-                                title={d.name || d.address}
-                                onPress={() => console.log(d)}
+                                key={device.address}
+                                title={device.name || device.address}
+                                onPress={() => handleDeviceSelect(device)}
                                 style={{
                                     padding: 10,
                                     borderBottomWidth: idx === devices.length - 1 ? 0 : 1,
                                     borderBottomColor: '#ccc',
                                 }}
                                 titleStyle={{ fontSize: 18, fontWeight: 'bold', color: '#000' }}
-                                description={`Endereço: ${d.address}. Type: ${d.type}`}
+                                description={`Endereço: ${device.address}. Type: ${device.type}`}
                                 descriptionStyle={{ fontSize: 14, color: '#555' }}
                                 left={(props) => (
                                     <List.Icon
