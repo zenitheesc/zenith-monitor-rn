@@ -23,7 +23,7 @@ export default function MapViewTrajectory({
 
     return (
         <React.Fragment>
-            {coordinates.length && (
+            {coordinates.length > 0 && (
                 <MapView
                     style={styles.map}
                     ref={mapRef}

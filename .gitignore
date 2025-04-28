@@ -42,3 +42,6 @@ app-example
 ./credentials.json
 credentials.json
 .env
+
+# Android
+gradle.properties

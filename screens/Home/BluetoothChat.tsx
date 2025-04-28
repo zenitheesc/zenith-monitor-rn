@@ -4,7 +4,6 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ActivityIndicator, Text } from 'react-native-paper';
 import { RootStackParamList } from '@/types/navigation';
-import { NavigationProp, RouteProp } from '@react-navigation/native';
 
 interface Message {
     id: string;
@@ -12,47 +11,27 @@ interface Message {
     timestamp: Date;
 }
 
-const messageTest: Message = {
-    id: '1',
-    text: 'Teste',
-    timestamp: new Date(),
-};
-
-const messageTest2: Message = {
-    id: '2',
-    text: 'Teste 2',
-    timestamp: new Date(),
-};
-
 type BluetoothChatProps = NativeStackScreenProps<RootStackParamList, 'BluetoothChat'>;
 
 function BluetoothChat({ route }: BluetoothChatProps) {
-    const { device } = route.params; // Pegando o device dos parâmetros da rota
+    const { device } = route.params;
     const [isConnected, setIsConnected] = useState(false);
     const scrollViewRef = useRef<ScrollView>(null);
-    const [messages, setMessages] = useState<Message[]>([messageTest, messageTest2]);
+    const [messages, setMessages] = useState<Message[]>([]);
 
     const connectToDevice = async (address: string) => {
         try {
-            // await bluetoothService.connect(address);
-            const newMessage: Message = {
-                id: Date.now().toString(),
-                text: address.toString(),
-                timestamp: new Date(),
-            };
-            setMessages((prevMessages) => [...prevMessages, newMessage]);
+            await bluetoothService.connect(address);
             setIsConnected(true);
-            // bluetoothService.onDataReceived((data) => {
-            //     const newMessage: Message = {
-            //         id: Date.now().toString(),
-            //         text: data.toString(),
-            //         timestamp: new Date(),
-            //     };
-
-            //     setMessages((prevMessages) => [...prevMessages, newMessage]);
-
-            scrollViewRef.current?.scrollToEnd({ animated: true });
-            // }
+            bluetoothService.onDataReceived((data) => {
+                const newMessage: Message = {
+                    id: Date.now().toString(),
+                    text: data.toString(),
+                    timestamp: new Date(),
+                };
+                setMessages((prevMessages) => [...prevMessages, newMessage]);
+                scrollViewRef.current?.scrollToEnd({ animated: true });
+            });
         } catch (err: any) {
             console.error('Error connecting to device:', err);
             setIsConnected(false);
@@ -68,7 +47,7 @@ function BluetoothChat({ route }: BluetoothChatProps) {
             bluetoothService.removeAllListeners();
             bluetoothService.disconnect();
         };
-    }, [device]);
+    }, []);
 
     const MessageBubble = ({ message }: { message: Message }) => (
         <View style={styles.messageBubbleContainer}>
