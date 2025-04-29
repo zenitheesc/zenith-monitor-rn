@@ -14,6 +14,7 @@ export default function MenuScreen({ navigation }: { navigation: any }) {
     const showFeedbackModal = () => setFeedbackVisible(true);
     const hideFeedbackModal = () => {
         setFeedbackVisible(false);
+
         setIsSubmitting(false);
     };
 
