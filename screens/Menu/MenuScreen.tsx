@@ -10,8 +10,7 @@ export default function MenuScreen({ navigation }: { navigation: any }) {
     const showLogoutModal = () => setLogoutVisible(true);
     const hideLogoutModal = () => setLogoutVisible(false);
 
-    const GOOGLE_FORMS_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSf6Y3wTphUs5WE5Kj1nHuBsgqtz65hfqBxwo23jt99ypZxnFQ/viewform?usp=dialog'
-    
+    const GOOGLE_FORMS_URL = config.FormsFeedbackUrl;
     const showFeedbackModal = () => setFeedbackVisible(true);
     const hideFeedbackModal = () => {
         setFeedbackVisible(false);
@@ -29,30 +28,29 @@ export default function MenuScreen({ navigation }: { navigation: any }) {
     const openGoogleForms = async () => {
         setIsSubmitting(true);
         try {
-    
             if (!GOOGLE_FORMS_URL) {
-                throw new Error("URL do formulário não configurada");
+                throw new Error('URL do formulário não configurada');
             }
 
             const canOpen = await Linking.canOpenURL(GOOGLE_FORMS_URL);
-            
+
             if (canOpen) {
                 await Linking.openURL(GOOGLE_FORMS_URL);
                 hideFeedbackModal();
             } else {
                 Alert.alert(
-                    "Erro",
-                    "Não foi possível abrir o formulário. Por favor, tente novamente mais tarde.",
-                    [{ text: "OK" }]
+                    'Erro',
+                    'Não foi possível abrir o formulário. Por favor, tente novamente mais tarde.',
+                    [{ text: 'OK' }]
                 );
             }
         } catch (error) {
             console.error('Erro ao abrir o formulário:', error);
-            Alert.alert(
-                "Erro",
-                error.message || "Ocorreu um erro ao tentar abrir o formulário.",
-                [{ text: "OK" }]
-            );
+            const errorMessage =
+                error instanceof Error
+                    ? error.message
+                    : 'Ocorreu um erro ao tentar abrir o formulário.';
+            Alert.alert('Erro', errorMessage, [{ text: 'OK' }]);
         } finally {
             setIsSubmitting(false);
         }
@@ -133,7 +131,8 @@ export default function MenuScreen({ navigation }: { navigation: any }) {
                         <View style={styles.modalContent}>
                             <Text style={styles.modalTitle}>Enviar Feedback</Text>
                             <Text style={styles.modalMessage}>
-                                Você será redirecionado para um formulário onde poderá nos enviar seu feedback.
+                                Você será redirecionado para um formulário onde poderá nos enviar
+                                seu feedback.
                             </Text>
                             <View style={styles.modalButtonsContainer}>
                                 <Button

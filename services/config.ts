@@ -1,5 +1,6 @@
 const config = {
-    LaunchesDataApi: process.env.EXPO_PUBLIC_ZENITH_LAUNCHES_DATA
+    LaunchesDataApi: process.env.EXPO_PUBLIC_ZENITH_LAUNCHES_DATA,
+    FormsFeedbackUrl: process.env.EXPO_PUBLIC_ZENITH_FORMS_FEEDBACK,
 };
 
 export default config;
