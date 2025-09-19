@@ -12,11 +12,12 @@ import {
     Surface,
 } from 'react-native-paper';
 import { bluetoothService } from '@/services/BluetoothService';
+import { bluetoothPermissions } from '@/utils/BluetoothPermissions';
 import { BluetoothDevice } from 'react-native-bluetooth-classic';
 
 export default function BluetoothScreen({ navigation }: any) {
     const [devices, setDevices] = useState<BluetoothDevice[]>([]);
-    const [connected, setConnected] = useState(false);
+    const [connected, setConnected] = useState(true);
     const [received, setReceived] = useState('');
     const [error, setError] = useState('');
     const [scanningDevices, setScanningDevices] = useState(false);
@@ -25,10 +26,25 @@ export default function BluetoothScreen({ navigation }: any) {
 
     const scanDevices = async () => {
         try {
+            setScanningDevices(true);
+
+            // Verifica se as permissões estão concedidas antes de buscar dispositivos
+            const hasPermissions = await bluetoothPermissions.checkBluetoothPermissions();
+
+            if (!hasPermissions) {
+                const granted = await bluetoothPermissions.requestPermissionsWithFeedback();
+                if (!granted) {
+                    setError('Permissões de Bluetooth são necessárias para buscar dispositivos');
+                    return;
+                }
+            }
+
             const bonded = await bluetoothService.getBondedDevices();
             setDevices(bonded);
         } catch (err: any) {
             setError(err.message);
+        } finally {
+            setScanningDevices(false);
         }
     };
 
@@ -56,7 +72,22 @@ export default function BluetoothScreen({ navigation }: any) {
 
     useEffect(() => {
         checkBluetoothEnabled();
+        // Verificar permissões ao carregar a tela
+        checkInitialPermissions();
     }, []);
+
+    const checkInitialPermissions = async () => {
+        try {
+            const hasPermissions = await bluetoothPermissions.checkBluetoothPermissions();
+            if (!hasPermissions) {
+                setError(
+                    'Algumas permissões de Bluetooth podem estar faltando. Toque em "Procurar Dispositivos" para configurá-las.'
+                );
+            }
+        } catch (error) {
+            console.error('Erro ao verificar permissões:', error);
+        }
+    };
 
     const handleDeviceSelect = (device: BluetoothDevice) => {
         navigation.navigate('BluetoothChat', { device });
@@ -170,13 +201,19 @@ export default function BluetoothScreen({ navigation }: any) {
                         ))}
                 </List.Section>
             </ScrollView>
-            {connected && (
+            {/* Essa é uma linha de teste para enviar mensagem para a ESP.
+                Ao clicar, envia a mensagem "Teste" e essa mensagem vai aparecer no console da ESP
+                Também é possível enviar mensagen da ESP para o aplicativo.
+                Possíveis aplicações: enviar dados de sensores, receber comandos, etc.
+                */}
+
+            {/* {connected && (
                 <>
                     <Button onPress={sendTest}>Enviar Teste</Button>
                     <Button onPress={disconnect}>Desconectar</Button>
                     <Text>Recebido: {received}</Text>
                 </>
-            )}
+            )} */}
             <Snackbar visible={!!error} onDismiss={() => setError('')}>
                 {error}
             </Snackbar>

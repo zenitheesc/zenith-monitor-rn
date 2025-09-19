@@ -3,6 +3,7 @@ import RNBluetoothClassic, {
     BluetoothDeviceReadEvent,
     BluetoothEventSubscription,
 } from 'react-native-bluetooth-classic';
+import { bluetoothPermissions } from '@/utils/BluetoothPermissions';
 
 type DataCallback = (data: string) => void;
 type DeviceCallback = (device: BluetoothDevice) => void;
@@ -17,12 +18,26 @@ class BluetoothService {
 
     // Lista dispositivos pareados
     async getBondedDevices(): Promise<BluetoothDevice[]> {
+        // Verifica e solicita permissões antes de listar dispositivos
+        const hasPermissions = await bluetoothPermissions.requestPermissionsWithFeedback();
+
+        if (!hasPermissions) {
+            throw new Error('Permissões de Bluetooth são necessárias para listar dispositivos');
+        }
+
         return await RNBluetoothClassic.getBondedDevices();
     }
 
     // Conecta a um dispositivo e retorna o objeto BluetoothDevice conectado
     async connect(address: string, options = {}): Promise<BluetoothDevice> {
         try {
+            // Verifica permissões antes de conectar
+            const hasPermissions = await bluetoothPermissions.requestPermissionsWithFeedback();
+
+            if (!hasPermissions) {
+                throw new Error('Permissões de Bluetooth são necessárias para conectar');
+            }
+
             // Conectar diretamente usando connectToDevice
             const device = await RNBluetoothClassic.connectToDevice(address, {
                 connectorType: 'rfcomm',
