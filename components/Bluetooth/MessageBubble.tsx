@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Text, Icon } from 'react-native-paper';
+import { Text, Icon, Button } from 'react-native-paper';
 import * as Clipboard from 'expo-clipboard';
+import * as Linking from 'expo-linking';
 import { MessageBubbleProps, TelemetryData } from '@/types/bluetooth';
 
 function parseTelemetryData(dataString: string): TelemetryData | null {
@@ -27,6 +28,17 @@ function parseTelemetryData(dataString: string): TelemetryData | null {
         return null;
     }
 }
+
+const openInGoogleMaps = async (latitude: number, longitude: number) => {
+    const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+    const canOpen = await Linking.canOpenURL(url);
+
+    if (canOpen) {
+        await Linking.openURL(url);
+    } else {
+        console.error('Não foi possível abrir o Google Maps');
+    }
+};
 
 export const MessageBubble = ({ message }: MessageBubbleProps) => {
     const telemetryData = parseTelemetryData(message.text);
@@ -61,15 +73,49 @@ export const MessageBubble = ({ message }: MessageBubbleProps) => {
                             </View>
 
                             <View style={styles.telemetryRow}>
-                                <View style={styles.telemetryItemFull}>
-                                    <View style={styles.labelWithIcon}>
-                                        <Icon source="map-marker" size={12} color="#666" />
-                                        <Text style={styles.telemetryLabel}>Coordenadas</Text>
-                                    </View>
-                                    <Text style={styles.telemetryValue}>
-                                        {telemetryData.latitude.toFixed(6)},{' '}
-                                        {telemetryData.longitude.toFixed(6)}
-                                    </Text>
+                                <View style={styles.coordinatesContainer}>
+                                    <TouchableOpacity
+                                        style={styles.coordinatesContent}
+                                        onPress={() =>
+                                            openInGoogleMaps(
+                                                telemetryData.latitude,
+                                                telemetryData.longitude
+                                            )
+                                        }
+                                        activeOpacity={0.7}
+                                    >
+                                        <View style={styles.coordinatesHeader}>
+                                            <View style={styles.labelWithIcon}>
+                                                <Icon source="map-marker" size={12} color="#666" />
+                                                <Text style={styles.telemetryLabel}>
+                                                    Coordenadas
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <Text style={styles.telemetryValue}>
+                                            {telemetryData.latitude.toFixed(6)},{' '}
+                                            {telemetryData.longitude.toFixed(6)}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.mapsButton}
+                                        onPress={() =>
+                                            openInGoogleMaps(
+                                                telemetryData.latitude,
+                                                telemetryData.longitude
+                                            )
+                                        }
+                                        activeOpacity={0.7}
+                                    >
+                                        <Button
+                                            icon="open-in-new"
+                                            mode="text"
+                                            compact={true}
+                                            textColor="#2196F3"
+                                        >
+                                            Abrir no Maps
+                                        </Button>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
 
@@ -77,9 +123,7 @@ export const MessageBubble = ({ message }: MessageBubbleProps) => {
                                 <View style={styles.telemetryItemFull}>
                                     <View style={styles.labelWithIcon}>
                                         <Icon source="clock-outline" size={12} color="#666" />
-                                        <Text style={styles.telemetryLabel}>
-                                            Hora do Dispositivo
-                                        </Text>
+                                        <Text style={styles.telemetryLabel}>Hora</Text>
                                     </View>
                                     <Text style={styles.telemetryValue}>{telemetryData.time}</Text>
                                 </View>
@@ -106,9 +150,7 @@ export const MessageBubble = ({ message }: MessageBubbleProps) => {
                                         </View>
                                         <View style={styles.labelWithIcon}>
                                             <Icon source="content-copy" size={10} color="#2196F3" />
-                                            <Text style={styles.copyIndicator}>
-                                                Tocar para copiar
-                                            </Text>
+                                            <Text style={styles.copyIndicator}>Copiar</Text>
                                         </View>
                                     </View>
                                     <Text style={styles.rawDataValue}>{message.text}</Text>
@@ -159,7 +201,7 @@ const styles = StyleSheet.create({
     timestamp: {
         fontSize: 12,
         color: '#999',
-        marginTop: 4,
+        marginTop: 10,
         alignSelf: 'flex-end',
     },
     telemetryHeader: {
@@ -208,12 +250,12 @@ const styles = StyleSheet.create({
     },
     telemetryValue: {
         fontSize: 13,
-        color: '#333',
+        color: '#000',
         fontWeight: '600',
     },
     rawDataValue: {
         fontSize: 11,
-        color: '#666',
+        color: '#000',
         fontFamily: 'monospace',
         backgroundColor: '#f0f0f0',
         padding: 4,
@@ -239,5 +281,36 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 4,
+    },
+    coordinatesContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: '#f8f9fa',
+        borderRadius: 6,
+        overflow: 'hidden',
+    },
+    coordinatesContent: {
+        flex: 1,
+        padding: 8,
+    },
+    coordinatesHeader: {
+        marginBottom: 2,
+    },
+    mapsButton: {
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        minWidth: 100,
+    },
+    mapsButtonText: {
+        fontSize: 11,
+        color: '#fff',
+        fontWeight: '600',
+    },
+    mapsIndicator: {
+        fontSize: 12,
+        color: '#4285F4',
+        fontWeight: '600',
     },
 });
