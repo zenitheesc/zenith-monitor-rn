@@ -21,7 +21,7 @@ export default function LoginScreen() {
             </View>
 
             <View style={{ flex: 1, justifyContent: 'flex-start' }}>
-                <Button
+                {/* <Button
                     mode="contained"
                     onPress={() => onToggleSnackBar()}
                     icon={'google'}
@@ -29,12 +29,13 @@ export default function LoginScreen() {
                     labelStyle={styles.buttonText}
                 >
                     Continuar com o Google
-                </Button>
+                </Button> */}
                 <Button
                     mode="contained"
                     onPress={() => router.replace('/(tabs)')}
                     style={styles.button}
                     labelStyle={styles.buttonText}
+                    icon={'ticket-account'}
                 >
                     Entrar sem conta
                 </Button>
@@ -48,7 +49,8 @@ export default function LoginScreen() {
                     onPress: () => {
                         onDismissSnackBar();
                     },
-                }}>
+                }}
+            >
                 Indisponível. Tente novamente mais tarde.
             </Snackbar>
         </SafeAreaView>

@@ -49,8 +49,9 @@ const styles = StyleSheet.create({
     },
     stepLine: {
         width: 1,
+        color: '#F28705',
         height: '100%',
-        backgroundColor: 'black',
+        backgroundColor: '#F28705',
         zIndex: 1,
     },
     stepIndicator: {
