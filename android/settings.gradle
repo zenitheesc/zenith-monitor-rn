@@ -21,7 +21,7 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
   }
 }
 
-rootProject.name = 'zenith-monitor-rn'
+rootProject.name = 'Zenith Monitor'
 
 dependencyResolutionManagement {
   versionCatalogs {

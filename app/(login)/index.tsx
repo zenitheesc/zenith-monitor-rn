@@ -14,7 +14,7 @@ export default function LoginScreen() {
         <SafeAreaView style={styles.container}>
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <Image
-                    source={require('../../assets/images/zenith-monitor-logo.png')}
+                    source={require('../../assets/images/zenith-monitor-rn-logo.png')}
                     style={[styles.image, { width: 300, height: 300 * (9 / 16) }]}
                     resizeMode="contain"
                 />
