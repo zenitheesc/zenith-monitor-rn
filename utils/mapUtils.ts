@@ -15,10 +15,8 @@ export type MapProviderType = (typeof MapProviders)[keyof typeof MapProviders];
  */
 export const checkGoogleMapsAvailability = async (): Promise<boolean> => {
     try {
-        // Verifica se a chave da API está configurada
-        const hasApiKey =
-            process.env.GOOGLE_MAPS_API_KEY || 'AIzaSyB_uLglLpXSWOiI57LU-gUMbBbs8fPpD9Y';
-        return !!hasApiKey;
+        // Verifica se a chave da API está configurada apenas via ambiente
+        return !!process.env.GOOGLE_MAPS_API_KEY;
     } catch (error) {
         console.warn('Google Maps não está disponível:', error);
         return false;
